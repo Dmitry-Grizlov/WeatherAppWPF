@@ -1,1 +1,1 @@
-# WeatherAppWPF
+Weatherapp is a simple weather forecast app, which uses some APIs to fetch 7 days / 48 hours forecast data from the OpenWeatherMap and to fetch places, cities, counties, coords etc. from LocationIQ. The main goal of this app is to learn how to work with WPF, use APIs, parse and deserialize JSON.
