@@ -1,0 +1,592 @@
+﻿<Window x:Class="_01._02._2022.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_01._02._2022"
+        mc:Ignorable="d"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        Title="WeatherApp"
+        Height="850" Width="600"
+        Foreground="#00000000" Background="{x:Null}">
+    <Window.Resources>
+        <Storyboard x:Key="openMenu">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="-1100, 0,0,0" To="0,0,0,0" DecelerationRatio="0.5" Duration="0:0:0.9"/>
+        </Storyboard>
+        <Storyboard x:Key="closeMenu">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0, 0,0,0" To="-1200,0,0,0" DecelerationRatio="0.5" Duration="0:0:0.9"/>
+        </Storyboard>
+
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CustomScrollViewer"
+       TargetType="{x:Type ScrollViewer}">
+            <Setter Property="OverridesDefaultStyle"
+          Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Border Grid.Column="1" BorderThickness="0,1,1,1">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
+                                </Border.BorderBrush>
+                                <ScrollContentPresenter CanContentScroll="{TemplateBinding CanContentScroll}" />
+                            </Border>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                     Value="{TemplateBinding VerticalOffset}"
+                     Maximum="{TemplateBinding ScrollableHeight}"
+                     ViewportSize="{TemplateBinding ViewportHeight}"
+                     Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                            <ScrollBar x:Name="PART_HorizontalScrollBar"
+                                            Orientation="Horizontal"
+                                            Grid.Row="1"
+                                            Grid.Column="1"
+                                            Value="{TemplateBinding HorizontalOffset}"
+                                            Maximum="{TemplateBinding ScrollableWidth}"
+                                            ViewportSize="{TemplateBinding ViewportWidth}"
+                                            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" MinHeight="5" BorderThickness="0,0,0,0">
+                                <ScrollBar.Background>
+                                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
+                                </ScrollBar.Background>
+                            </ScrollBar>
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border>
+        <Border.Background>
+            <ImageBrush ImageSource="Images/mainBg.jpg"/>
+        </Border.Background>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80*"></ColumnDefinition>
+                <ColumnDefinition Width="420*"></ColumnDefinition>
+                <ColumnDefinition Width="80*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="136*"></RowDefinition>
+                <RowDefinition Height="203*"></RowDefinition>
+                <RowDefinition Height="191*"></RowDefinition>
+                <RowDefinition Height="294*"></RowDefinition>
+                <RowDefinition Height="10*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Name="leftMenu" Margin="-1100,0,128,0" Width="600" Grid.RowSpan="5" Grid.ColumnSpan="3"  Panel.ZIndex="1000">
+                <StackPanel.Background>
+                    <ImageBrush ImageSource="/Images/bg2.jpg"/>
+                </StackPanel.Background>
+
+                <Grid Height="421" Margin="0,0,0,0" Width="560">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+
+
+                    <Button  Style="{DynamicResource ButtonStyle1}" x:Name="button1" Content="C°" HorizontalAlignment="Center" Margin="0,0,200,0" VerticalAlignment="Center" Width="200" Height="65" FontSize="48" BorderThickness="0.5" BorderBrush="Azure" Foreground="White" Background="Transparent" FontFamily="Noto Sans" Click="ConvertCelsius"/>
+                    <Button  Style="{DynamicResource ButtonStyle1}" x:Name="button2" Content="F°" HorizontalAlignment="Center" Margin="200,0,0,0" VerticalAlignment="Center" Width="200" Height="65" FontSize="48" BorderThickness="0.5" BorderBrush="Azure" Foreground="White" Background="Transparent" FontFamily="Noto Sans" Click="ConvertFarengheit"/>
+                    <Button Style="{DynamicResource ButtonStyle1}" x:Name="menuButton_close" Content="" Panel.ZIndex="1" Margin="485,15,10,20" BorderThickness="0" Click="BtnClose_Click">
+                        <Button.Background>
+                            <ImageBrush ImageSource="/Images/baseline_menu_white_48dp.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Image Source="Images/baseline_search_white_48dp.png" Margin="500,0,5,0" Grid.Row="1" Panel.ZIndex="1" VerticalAlignment="Center" MouseLeftButtonDown="Search_Click" Width="45" Height="50"/>
+                    <TextBox Name="cityToSearch" Margin="10" Grid.Row="1" FontSize="36" FontFamily="Noto Sans" Foreground="White" Padding="20, 20, 0, 0" KeyDown="Enter_Detect" >
+                        <TextBox.Background>
+                            <SolidColorBrush Color="#FF2690CD"/>
+                        </TextBox.Background>
+                    </TextBox>
+
+                </Grid>
+
+            </StackPanel>
+
+            <Border CornerRadius="25" Grid.Column="1" Margin="0,136,0,0" Grid.RowSpan="2">
+                <Border.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.9"/>
+                </Border.Background>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="10,10,10,115" Grid.Row="1">
+                <TextBlock Name="currTemp" Foreground="white" FontSize="72" Width="111" Margin="95,-14,10,0" VerticalAlignment="Bottom" Height="75" FontFamily="Noto Sans" TextAlignment="Right" RenderTransformOrigin="0.538,0.608"><Run Text="17°"/></TextBlock>
+                <Image Name="currentWeatherConditionImage" Source="/Images/Group-2.png" Height="68"  RenderTransformOrigin="0.425,-2.203" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,180,0" Width="65"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="10,96,10,10" Grid.Row="1">
+                <TextBlock Name="currentWeatherState" Foreground="white" FontSize="36" Margin="138,0,126,0" HorizontalAlignment="Center" Width="118" VerticalAlignment="Center" FontFamily="Noto Sans Cond" FontWeight="Bold"><Run Text="Sunny"/></TextBlock>
+                <TextBlock Name="feels_like" Foreground="white" FontSize="32" HorizontalAlignment="Center" FontFamily="Noto Sans"><Run Text="It feels like 15°"/></TextBlock>
+            </StackPanel>
+
+            <Border CornerRadius="20" Grid.Column="1" Margin="0,10,0,0" Grid.Row="2" Grid.RowSpan="2">
+                <Border.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.9"/>
+                </Border.Background>
+            </Border>
+
+            <StackPanel Grid.Column="1" Margin="10,10,10,105" Grid.Row="2">
+                <TextBlock Foreground="White" FontSize="36" HorizontalAlignment="Center" FontFamily="Noto Sans" FontWeight="Bold" TextAlignment="Center" TextDecorations="{x:Null}">Weather</TextBlock>
+            </StackPanel>
+
+            <ScrollViewer Style="{DynamicResource CustomScrollViewer}" Name="hourlyScroll" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="1" Margin="0,200,0,5" Grid.RowSpan="2" >
+                <StackPanel Name="parentForHourly" Orientation="Horizontal"  Margin="0,65,0,0" >
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" FontFamily="Noto Sans" Margin="0,0,0,5">20:00</TextBlock>
+                        <Image Source="/Images/Group-2.png"/>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="16" Width="52" HorizontalAlignment="Center" TextAlignment="Center" Height="20" FontFamily="Noto Sans" Margin="0,5,0,0"><Run Text="15°"/></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+
+            <StackPanel Name ="parentForDaily" Grid.Column="1" Margin="0,5,0,5" Grid.Row="3">
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Monday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="60,0,0,0" Width="47" Height="40"></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Tuesday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="60,0,0,0" Width="47" Height="40"></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Wednesday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="15,0,0,0" Width="47" Height="40"></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Thursday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="48,0,0,0" Width="47" Height="40"></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Friday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="89,0,0,0" Width="47" Height="40"/>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Saturday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="52,0,0,0" Width="47" Height="40" ></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Height="40">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Foreground="White" FontSize="30" Height="40" Margin="5,0,0,0" HorizontalAlignment="Left">Sunday</TextBlock>
+                        <Image Source="/Images/Group-11.png" Margin="71,0,0,0" Width="47" Height="40"></Image>
+                        <TextBlock Foreground="White" FontSize="24" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="100,0,0,0"><Run Text="15°"/></TextBlock>
+                        <TextBlock Foreground="White" Opacity="0.5" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20,0,0,0">15°</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="0,67,0,67" Width="0"/>
+
+            <Button Style="{DynamicResource ButtonStyle1}" Margin="5,15,5,40" Click="LocalData">
+                <Button.BorderBrush>
+                    <SolidColorBrush Color="#FF707070" Opacity="0"/>
+                </Button.BorderBrush>
+                <Button.Background>
+                    <ImageBrush ImageSource="/Images/baseline_place_white_48dp.png"/>
+                </Button.Background>
+                <Button.Foreground  >
+                    <ImageBrush ImageSource="/Images/baseline_place_white_48dp.png"/>
+                </Button.Foreground>
+            </Button>
+
+            <Image Name="rainyImage" Source="/Images/Group 1.png" Visibility="Hidden"/>
+            <Image Name="cloudyImage" Source="/Images/Group-10.png" Visibility="Hidden"/>
+            <Image Name="sunnyImage" Source="/Images/Group-2.png" Visibility="Hidden"/>
+            <Image Name="snowyImage" Source="/Images/Group-7.png" Visibility="Hidden"/>
+
+            <Image Name="rainyMiniature" Source="/Images/rainyMiniature.png" Visibility="Hidden"/>
+            <Image Name="cloudyMiniature" Source="/Images/clouyMiniature.png" Visibility="Hidden"/>
+            <Image Name="sunnyMiniature" Source="/Images/sunnyMiniature.png" Visibility="Hidden"/>
+            <Image Name="snowyMiniature" Source="/Images/snowyMiniature.png" Visibility="Hidden"/>
+
+
+            <TextBlock Name="currCity" Foreground="White" Grid.Column="1" Margin="0,10,0,0" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.9" Width="414" TextAlignment="Center" Height="53">Moskow</TextBlock>
+            <TextBlock Name="currTime" Foreground="White" Grid.Column="1" Margin="0,40,0,0" FontSize="72" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.9" Height="83" Width="170"><Run Text="19:00"/></TextBlock>
+            <Button Style="{DynamicResource ButtonStyle1}" x:Name="menuButton" Grid.Column="2" Margin="0,15,0,0" VerticalAlignment="Top" Width="75" Height="80" BorderThickness="0" Click="BtnOpen_Click" Foreground="White" BorderBrush="#FF191818">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Images/baseline_menu_white_48dp.png"/>
+                </Button.Background>
+            </Button>
+        </Grid>
+    </Border>
+
+</Window>
